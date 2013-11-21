@@ -72,6 +72,11 @@ app.get('/logout', function(req, res){
 	res.redirect('/');
 });
 
+app.get('/success', function(req, res){
+	res.contentType('json');
+	res.send({result:'success', details:req.user});
+});
+
 app.get('/api/me', 
   passport.authenticate('twitter', { session: false }),
   function(req, res) {
