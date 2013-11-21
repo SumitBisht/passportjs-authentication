@@ -3,6 +3,10 @@ var express = require('express')
 , passport = require('passport')
 , TwitterStrategy = require('passport-twitter').Strategy
 , config = require('./private-settings.js')
+, mongoose = require('mongoose')
+, db = mongoose.connect('mongodb://localhost:27017/auth')
+, UserModel = require('./models/user.js')
+, User = mongoose.model('User')
 , app = express();
 
 app.configure(function(){
@@ -15,9 +19,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 });
 
-// http.createServer(app).listen(app.get('port'), function(){
-//   console.log('Express server listening on port ' + app.get('port'));
-// });
 
 passport.use(new TwitterStrategy({
     consumerKey: config.twitter.consumerKey,
@@ -25,13 +26,30 @@ passport.use(new TwitterStrategy({
     callbackURL: config.twitter.callbackURL
   },
   function(token, tokenSecret, profile, done) {
-    // User.findOrCreate(..., function(err, user) {
-    //   if (err) { return done(err); }
-    process.nextTick(function(){
-    	return done(null, profile);
+    User.findOne({id:profile.id}, function(err, user) {
+      if (!err && user != null) {
+        var objectId = mongoose.Types.ObjectId
+        User.update({"_id":user["_id"]}, {$set: {modified: new Date()}}).exec();
+         }else{
+         	var user_data = new User({
+         		id: profile.id,
+         		provider: profile.provider,
+         		displayName: profile.displayName,
+         		name: profile.username,
+         		emails:{value:profile.email},
+         		created: Date.now(),
+         		modified: Date.now(),
+         		oauthtoken: token
+         	});
+         	user_data.save(function(error){
+         		if(error)
+         			console.log('Error while saving user: '+error);
+         		else
+         			console.log('User Saved successfully:'+profile.id);
+         	});
+         }
+    	return done(null, user);
     });
-      
-    // });
   }
 ));
 passport.serializeUser(function(user, done) {
@@ -55,7 +73,7 @@ app.get('/logout', function(req, res){
 });
 
 app.get('/api/me', 
-  passport.authenticate('token', { session: false }),
+  passport.authenticate('twitter', { session: false }),
   function(req, res) {
   	if(req.user!=null){
     	res.json(req.user);
