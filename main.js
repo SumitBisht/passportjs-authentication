@@ -2,6 +2,7 @@ var express = require('express')
 , util = require('util')
 , passport = require('passport')
 , TwitterStrategy = require('passport-twitter').Strategy
+, GithubStrategy = require('passport-github').Strategy
 , config = require('./private-settings.js')
 , mongoose = require('mongoose')
 , db = mongoose.connect('mongodb://localhost:27017/auth')
@@ -52,6 +53,39 @@ passport.use(new TwitterStrategy({
     });
   }
 ));
+
+passport.use(new GithubStrategy({
+    clientID: config.github.clientID,
+    clientSecret: config.github.clientSecret,
+    callbackURL: config.github.callbackURL
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOne({id:profile.id}, function(err, user) {
+      if (!err && user != null) {
+        var objectId = mongoose.Types.ObjectId
+        User.update({"_id":user["_id"]}, {$set: {modified: new Date()}}).exec();
+         }else{
+         	var user_data = new User({
+         		id: profile.id,
+         		provider: profile.provider,
+         		displayName: profile.name,
+         		name: profile.login,
+         		emails:{type:"email", value:profile.email},
+         		created: Date.now(),
+         		modified: Date.now(),
+         		oauthtoken: token
+         	});
+         	user_data.save(function(error){
+         		if(error)
+         			console.log('Error while saving user: '+error);
+         		else
+         			console.log('User Saved successfully:'+profile.id);
+         	});
+         }
+    	return done(null, user);
+    });
+  }
+));
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -60,12 +94,17 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/',
-            failureRedirect: '/login' }));
+// app.post('/login', passport.authenticate('local', { successRedirect: '/',
+//             failureRedirect: '/login' }));
 
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', 
   passport.authenticate('twitter', { successRedirect: '/success',
+                                     failureRedirect: '/failure' }));
+
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { successRedirect: '/success',
                                      failureRedirect: '/failure' }));
 app.get('/logout', function(req, res){
 	req.logout();
@@ -78,7 +117,7 @@ app.get('/success', function(req, res){
 });
 
 app.get('/api/me', 
-  passport.authenticate('twitter', { session: false }),
+  // passport.authenticate('twitter', { session: false }),
   function(req, res) {
   	if(req.user!=null){
     	res.json(req.user);
