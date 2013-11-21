@@ -8,7 +8,11 @@ var express = require('express')
 , db = mongoose.connect('mongodb://localhost:27017/auth')
 , UserModel = require('./models/user.js')
 , User = mongoose.model('User')
+, path = require('path')
 , app = express();
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 
 app.configure(function(){
 app.use(express.logger());
@@ -98,6 +102,9 @@ passport.deserializeUser(function(obj, done) {
 // app.post('/login', passport.authenticate('local', { successRedirect: '/',
 //             failureRedirect: '/login' }));
 
+app.get('/', function(req, res){
+	res.render('index', { title: 'Welcome to PassportJS Example' });
+});
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', 
   passport.authenticate('twitter', { successRedirect: '/success',
