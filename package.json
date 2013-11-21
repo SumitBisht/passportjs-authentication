@@ -1,0 +1,24 @@
+{
+  "name": "Authenticator",
+  "description": "Provides authentication through passportjs",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "passport": "0.1.x"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "authenticator"
+  },
+  "keywords": [
+    "authentication",
+    "passportjs"
+  ],
+  "author": "sumit bisht",
+  "license": "MIT"
+}
