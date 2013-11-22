@@ -19,7 +19,8 @@ As this is placed in gitignore, this file needs to be recreated on the root of t
     github: {
      clientID: 'get_your_own',
      clientSecret: 'get_your_own',
-     callbackURL: "http://127.0.0.1:8080/auth/github/callback"
+     callbackURL: "http://127.0.0.1:8080/auth/github/callback",
+     userAgent: 'http://127.0.0.1:8080'
     },
     google: {
      returnURL: 'http://127.0.0.1:8080/auth/google/callback',
