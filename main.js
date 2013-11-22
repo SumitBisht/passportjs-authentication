@@ -3,6 +3,7 @@ var express = require('express')
 , passport = require('passport')
 , LocalStrategy = require('passport-local').Strategy
 , TwitterStrategy = require('passport-twitter').Strategy
+, FacebookStrategy = require('passport-facebook').Strategy
 , GithubStrategy = require('passport-github').Strategy
 , config = require('./private-settings.js')
 , mongoose = require('mongoose')
@@ -78,6 +79,39 @@ passport.use(new TwitterStrategy({
   }
 ));
 
+passport.use(new FacebookStrategy({
+    clientID:config.facebook.clientID,
+    clientSecret:config.facebook.clientSecret,
+    callbackURL:config.facebook.callbackURL,
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOne({id:profile.id}, function(err, user) {
+      if (!err && user != null) {
+        var objectId = mongoose.Types.ObjectId
+        User.update({"_id":user["_id"]}, {$set: {modified: new Date()}}).exec();
+         }else{
+            var user_data = new User({
+                id: profile.id,
+                provider: profile.provider,
+                displayName: profile.first_name+' '+profile.last_name,
+                name: profile.username,
+                emails:{value:profile.email},
+                created: Date.now(),
+                modified: Date.now(),
+                oauthtoken: token
+            });
+            user_data.save(function(error){
+                if(error)
+                    console.log('Error while saving user: '+error);
+                else
+                    console.log('User Saved successfully:'+profile.id);
+            });
+         }
+        return done(null, user);
+    });
+  }
+));
+
 passport.use(new GithubStrategy({
     clientID: config.github.clientID,
     clientSecret: config.github.clientSecret,
@@ -130,6 +164,11 @@ app.get('/', function(req, res){
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', 
   passport.authenticate('twitter', { successRedirect: '/success',
+                                     failureRedirect: '/failure' }));
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook/callback', 
+  passport.authenticate('facebook', { successRedirect: '/success',
                                      failureRedirect: '/failure' }));
 
 app.get('/auth/github', passport.authenticate('github'));
