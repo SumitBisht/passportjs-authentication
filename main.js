@@ -82,7 +82,7 @@ passport.use(new GithubStrategy({
     clientID: config.github.clientID,
     clientSecret: config.github.clientSecret,
     callbackURL: config.github.callbackURL,
-    userAgent: 'http://127.0.0.1:8080'
+    userAgent: config.github.userAgent
   },
   function(token, tokenSecret, profile, done) {
     User.findOne({id:profile.id}, function(err, user) {
