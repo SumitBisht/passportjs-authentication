@@ -8,6 +8,7 @@
     "jade": "*",
     "mongoose":"3.8.x",
     "passport": "0.1.x",
+    "passport-local":"0.1.x",
     "passport-twitter":"0.1.x",
     "passport-github":"0.1.x"
   },

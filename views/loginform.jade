@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  if locals.message
+    p= message
+  else
+    p -
+  form#loginform(name='loginform', method='post', action='')
+    table
+      tr
+        td
+          p Enter name:
+        td
+          input(type='text', name='username')
+      tr
+        td
+          p Password :
+        td
+          input(type='password', name='password')
+      tr
+        td
+        td(colspan=2)
+          input(type='submit', name='Submit', value='Login')

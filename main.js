@@ -1,6 +1,7 @@
 var express = require('express')
 , util = require('util')
 , passport = require('passport')
+, LocalStrategy = require('passport-local').Strategy
 , TwitterStrategy = require('passport-twitter').Strategy
 , GithubStrategy = require('passport-github').Strategy
 , config = require('./private-settings.js')
@@ -24,6 +25,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 });
 
+passport.use(new LocalStrategy(
+    function(username, password, done){
+        User.findOne({username: username}, function(error, user){
+        	if(error) {
+        		console.log('Error occured:'+error);
+        		return done(error);
+        	}
+        	if(!user){
+        		console.log('User not found');
+        		return done(null, false, {message:'User not found'});
+        	}
+        	if(!user.validPassword(password)){
+        		console.log('Password not correct');
+        		return done(null, false, {message:'Password does not match'});
+        	}
+        	return done(null, user);
+        });
+}
+));
 
 passport.use(new TwitterStrategy({
     consumerKey: config.twitter.consumerKey,
@@ -98,9 +118,11 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-
-// app.post('/login', passport.authenticate('local', { successRedirect: '/',
-//             failureRedirect: '/login' }));
+app.get('/auth/basic', function(req, res){
+	res.render('loginform');
+});
+app.post('/auth/basic', passport.authenticate('local', { successRedirect: '/api/me',
+            failureRedirect: '/auth/basic' }));
 
 app.get('/', function(req, res){
 	res.render('index', { title: 'Welcome to PassportJS Example' });
