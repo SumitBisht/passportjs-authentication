@@ -3,6 +3,7 @@ var passport = require('passport')
 , TwitterStrategy = require('passport-twitter').Strategy
 , FacebookStrategy = require('passport-facebook').Strategy
 , GithubStrategy = require('passport-github').Strategy
+, GoogleStrategy = require('passport-google').Strategy
 , UserModel = require('./models/user.js')
 , config =  require('./private-settings.js')
 , mongoose = require('mongoose')
@@ -126,5 +127,36 @@ passport.use(new GithubStrategy({
          }
     	return done(null, user);
     });
+  }
+));
+passport.use(new GoogleStrategy({
+	returnURL: config.google.returnURL,
+	realm: config.google.realm
+  },
+  function(token, tokenSecret, profile, done){
+  	User.findOne({id:profile.id, provider:profile.provider}, function(err, user) {
+  		if(!err && user != null) {
+  			var objectId = mongoose.Types.ObjectId
+  			User.update({"_id":user["_id"]}, {$set: {modified: new Date()}}).exec();
+  		}else{
+  			var user_data = new User({
+  				id: profile.id,
+  				provider: profile.provider,
+  				displayName: profile.name,
+  				name: profile.name,
+  				emails:{type:"email", value:profile.email},
+  				created: Date.now(),
+  				modified: Date.now(),
+  				oauthtoken: token
+  			});
+         	user_data.save(function(error){
+         		if(error)
+         			console.log('Error while saving user: '+error);
+         		else
+         			console.log('User Saved successfully:'+profile.id);
+         	});
+  		}
+  		return done(null, user);
+  	});
   }
 ));

@@ -29,11 +29,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-app.get('/auth/basic', function(req, res){
-	res.render('loginform');
-});
-app.post('/auth/basic', passport.authenticate('local', { successRedirect: '/api/me',
-            failureRedirect: '/auth/basic' }));
 
 app.get('/', function(req, res){
 	res.render('index', { title: 'Welcome to PassportJS Example' });
@@ -52,6 +47,18 @@ app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback', 
   passport.authenticate('github', { successRedirect: '/success',
                                      failureRedirect: '/failure' }));
+
+app.get('/auth/google', passport.authenticate('google'));
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { successRedirect: '/success',
+                                     failureRedirect: '/failure' }));
+
+app.get('/auth/basic', function(req, res){
+    res.render('loginform');
+});
+app.post('/auth/basic', passport.authenticate('local', { successRedirect: '/api/me',
+            failureRedirect: '/auth/basic' }));
+
 app.get('/logout', function(req, res){
 	req.logout();
 	res.redirect('/');

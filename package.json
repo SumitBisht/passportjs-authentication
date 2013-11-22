@@ -11,7 +11,8 @@
     "passport-local":"0.1.x",
     "passport-twitter":"0.1.x",
     "passport-facebook":"1.0.x",
-    "passport-github":"0.1.x"
+    "passport-github":"0.1.x",
+    "passport-google":"0.3.x"
   },
   "main": "main.js",
   "scripts": {
