@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Passportjs-authentication : Provides multiple authentication schemes present in passportjs" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Passportjs-authentication</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/SumitBisht/passportjs-authentication">View on GitHub</a>
+
+          <h1 id="project_title">Passportjs-authentication</h1>
+          <h2 id="project_tagline">Provides multiple authentication schemes present in passportjs</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/SumitBisht/passportjs-authentication/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/SumitBisht/passportjs-authentication/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="passportjs-authentication" class="anchor" href="#passportjs-authentication"><span class="octicon octicon-link"></span></a>passportjs-authentication</h1>
+
+<hr><h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>Provides multiple authentication schemes present in passpot.js</p>
+
+<p>Ideas &amp; Nit-pickingsr
+In case you are looking forward for other ideas, do fork and provide a pull request. Similarly, please file issues for bugs/clarifications.</p>
+
+<p>Provides multiple authentication schemes present in passportjs. For external providers with Oauth2 scheme, the access keys have been stored in private-settings.js As this is placed in gitignore, this file needs to be recreated on the root of the project with content as follows:</p>
+
+<p>`var ids = {</p>
+
+<pre><code> facebook: {
+
+  clientID: 'get_your_own',
+
+  clientSecret: 'get_your_own',
+
+  callbackURL: 'http://127.0.0.1:8080/auth/facebook/callback'
+
+ },
+
+ twitter: {
+
+  consumerKey: 'get_your_own',
+
+  consumerSecret: 'get_your_own',
+
+  callbackURL: "http://127.0.0.1:8080/auth/twitter/callback"
+
+ },
+
+ github: {
+
+  clientID: 'get_your_own',
+
+  clientSecret: 'get_your_own',
+
+  callbackURL: "http://127.0.0.1:8080/auth/github/callback",
+
+  userAgent: 'http://127.0.0.1:8080'
+
+ },
+
+ google: {
+
+  returnURL: 'http://127.0.0.1:8080/auth/google/callback',
+
+  realm: 'http://127.0.0.1:8080'
+
+  }
+
+ }
+
+ module.exports = ids`
+</code></pre>
+
+<p>Also, please ensure the callback urls used in the application &amp; in external applications match with the actual url in place.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Passportjs-authentication maintained by <a href="https://github.com/SumitBisht">SumitBisht</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
