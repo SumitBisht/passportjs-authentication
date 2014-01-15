@@ -1,13 +1,14 @@
-var express = require('express')
-, util = require('util')
-, passport = require('passport')
-, auth = require('./authentication.js')
-, mongoose = require('mongoose')
-, db = mongoose.connect('mongodb://localhost:27017/auth')
-, UserModel = require('./models/user.js')
-, User = mongoose.model('User')
-, path = require('path')
-, app = express();
+var express = require('express');
+var util = require('util');
+var passport = require('passport');
+var auth = require('./authentication.js');
+var mongoose = require('mongoose');
+var db = mongoose.connect('mongodb://localhost:27017/auth');
+var UserModel = require('./models/user.js');
+var User = mongoose.model('User');
+var path = require('path');
+var app = express();
+var console = require('console');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -31,7 +32,7 @@ passport.deserializeUser(function(obj, done) {
 });
 
 app.get('/', function(req, res){
-	res.render('index', { title: 'Welcome to PassportJS Example' });
+  res.render('index', { title: 'Welcome to PassportJS Example' });
 });
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', 
@@ -60,21 +61,22 @@ app.post('/auth/basic', passport.authenticate('local', { successRedirect: '/api/
             failureRedirect: '/auth/basic' }));
 
 app.get('/logout', function(req, res){
-	req.logout();
-	res.redirect('/');
+  req.logout();
+  res.redirect('/');
 });
 
 app.get('/success', function(req, res){
-	res.contentType('json');
-	res.send({result:'success', details:req.user});
+  res.contentType('json');
+  res.send({result:'success', details:req.user});
 });
 
 app.get('/api/me',
   function(req, res) {
-  	if(req.user!=null){
-    	res.json(req.user);
-	}else{
-		res.json("{'result':'Unable to find the authenticated user'}");
-	}
+    if(req.user!=null){
+      res.json(req.user);
+  }else{
+    res.json("{'result':'Unable to find the authenticated user'}");
+  }
   });
+console.warn('Starting app at port 8080');
 app.listen(8080);
