@@ -22,6 +22,7 @@ app.use(express.session({secret:"my cust0m 5E5510N k3y"}));
 app.use(passport.initialize());
 app.use(passport.session());
 });
+module.exports = express;
 
 passport.serializeUser(function(user, done) {
   done(null, user);

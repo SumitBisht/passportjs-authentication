@@ -2,7 +2,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     jshint: {
-      src: ['Gruntfile.js', '*.js', 'models/*.js', 'tests/*.js'],
+      src: ['*.js', 'models/*.js', 'test/*.js'],
       options: {
         curly: true,
         eqeqeq: true,
