@@ -4,7 +4,7 @@ var request = require('supertest');
 
 describe('Routes', function(){
 
-	var url = 'localhost:8080'
+	var url = '127.0.0.1:8080'
 	it('should be able to access index page', function(done){
 		request(url)
 		.get('/')
@@ -35,6 +35,11 @@ describe('Routes', function(){
 	it('should fail on repeated wrong authorizations', function(done){
 		request(url)
 		.get('/auth/facebook')
+		.expect(302, done);
+	});
+	it('should fail on repeated wrong authorizations', function(done){
+		request(url)
+		.get('/auth/github')
 		.expect(302, done);
 	});
 	it('should fail even with form data', function(done){
